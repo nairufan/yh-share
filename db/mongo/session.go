@@ -49,3 +49,14 @@ func (s *Session) MustInsert(collectionName string, docs ...interface{}) {
 		panic(err)
 	}
 }
+
+
+func (s *Session) Find(collection string, query interface{}, result interface{}) error {
+	return s.C(collection).Find(query).All(result)
+}
+
+func (s *Session) MustFind(collection string, query interface{}, result interface{}) {
+	if err := s.Find(collection, query, result); err != nil {
+		panic(err)
+	}
+}

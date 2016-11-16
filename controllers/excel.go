@@ -58,5 +58,13 @@ func (u *ExcelController) Save() {
 	u.Data["json"] = map[string]string{
 		URL: "/query/" + excelRecords[0].BatchKey,
 	}
-	u.ServeJSON();
+	u.ServeJSON()
+}
+// @router /search [get]
+func (u *ExcelController) Search() {
+	query := u.GetString("query")
+	key := u.GetString("key")
+	records := service.Search(key, query)
+	u.Data["json"] = records
+	u.ServeJSON()
 }
