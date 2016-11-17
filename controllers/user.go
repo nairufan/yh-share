@@ -2,15 +2,16 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"fmt"
 )
 
 type UserController struct {
-	beego.Controller
+	BaseController
 }
 
 // @router /wx-login [get]
 func (u *UserController) WxLogin() {
 	openId := u.GetString("code")
-	fmt.Println("openId:", openId)
+	beego.Info("openId:", openId)
+	//Todo mock login
+	u.SetUserId("1111")
 }

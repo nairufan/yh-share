@@ -3,6 +3,7 @@ package util
 import (
 	"mime/multipart"
 	"github.com/tealeg/xlsx"
+	"github.com/astaxie/beego"
 )
 
 type Size interface {
@@ -14,15 +15,16 @@ func ParseFile(file multipart.File) [][]string {
 	bytes := make([]byte, size)
 	_, err := file.Read(bytes)
 	if err != nil {
-		panic(err)
+		Panic(err)
 	}
 	xlFile, err := xlsx.OpenBinary(bytes)
 	if err != nil {
-		panic(err)
+		beego.Error(err)
+		Panic(err)
 	}
 	sheets, err := xlFile.ToSlice()
 	if err != nil {
-		panic(err)
+		Panic(err)
 	}
 	if sheets != nil && len(sheets) > 0 {
 		return sheets[0]
