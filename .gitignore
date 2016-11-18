@@ -3,3 +3,4 @@ yh-share.exe
 yh-share.exe~
 lastupdate.tmp*
 .idea/libraries/GOPATH__yh_share_.xml
+routers/commentsRouter_github_com_nairufan_yh-share_controllers.go
