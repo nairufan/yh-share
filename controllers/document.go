@@ -6,6 +6,7 @@ import (
 	"github.com/nairufan/yh-share/model"
 	"github.com/nairufan/yh-share/service"
 	"github.com/astaxie/beego"
+	"errors"
 )
 
 type ExcelController struct {
@@ -42,6 +43,9 @@ func (u *ExcelController) Save() {
 	var request saveRequest
 	json.Unmarshal(u.Ctx.Input.RequestBody, &request)
 	records := u.ClearExcel()
+	if records == nil {
+		util.Panic(errors.New("No excel file found."))
+	}
 	excelRecords := []*model.Excel{}
 	for _, record := range records {
 		if len(record) > 2 {
@@ -76,7 +80,7 @@ func (u *ExcelController) Search() {
 }
 // @router /list [get]
 func (u *ExcelController) List() {
-	list := service.DocumentList(u.GetUserId())
+	list := service.DocumentList(u.GetUserId(), 0, 10)
 	u.Data["json"] = list
 	u.ServeJSON()
 }

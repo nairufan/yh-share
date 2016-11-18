@@ -27,6 +27,13 @@ func init() {
 			[]string{"get"},
 			nil})
 
+	beego.GlobalControllerRouter["github.com/nairufan/yh-share/controllers:ExcelController"] = append(beego.GlobalControllerRouter["github.com/nairufan/yh-share/controllers:ExcelController"],
+		beego.ControllerComments{
+			"List",
+			`/list`,
+			[]string{"get"},
+			nil})
+
 	beego.GlobalControllerRouter["github.com/nairufan/yh-share/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/nairufan/yh-share/controllers:UserController"],
 		beego.ControllerComments{
 			"WxLogin",

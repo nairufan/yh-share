@@ -3,6 +3,8 @@ package main
 import (
 	_ "github.com/nairufan/yh-share/docs"
 	_ "github.com/nairufan/yh-share/routers"
+	_ "github.com/garyburd/redigo/redis"
+	_ "github.com/astaxie/beego/session/redis"
 	"github.com/astaxie/beego"
 	"github.com/nairufan/yh-share/controllers"
 	"github.com/nairufan/yh-share/filters"

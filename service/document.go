@@ -21,10 +21,16 @@ func AddDocument(document *model.Document) *model.Document {
 	return document
 }
 
-func DocumentList(userId string) []*model.Document {
+func DocumentList(userId string, offset int, limit int) []*model.Document {
 	session := mongo.Get()
 	defer session.Close()
 	documents := []*model.Document{}
-	session.MustFind(collectionDocuments, bson.M{"userId": userId}, &documents)
+
+	option := mongo.Option{
+		Sort: []string{"-createdTime"},
+		Limit: &limit,
+		Offset: &offset,
+	}
+	session.MustFindWithOptions(collectionDocuments, bson.M{"userId": userId}, option, &documents)
 	return documents
 }

@@ -34,7 +34,6 @@ func (c *ErrorController) Error500() {
 	c.Data["json"] = &Error{
 		Error: "Internal server error.",
 		ErrorCode: 500,
-		Reason: c.Ctx.Input.Data(),
 	}
 	c.ServeJSON()
 }

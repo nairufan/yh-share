@@ -30,11 +30,11 @@ func (b *BaseController) SetExcel(data [][]string) {
 }
 
 func (b *BaseController) getExcel() [][]string {
-	uid := b.GetSession(Excel)
-	if uid == nil {
+	excel := b.GetSession(Excel)
+	if excel == nil {
 		return nil
 	}
-	return uid.([][]string)
+	return excel.([][]string)
 }
 
 func (b *BaseController) ClearExcel() [][]string {
