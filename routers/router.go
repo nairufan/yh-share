@@ -14,7 +14,7 @@ import (
 
 func init() {
 	ns := beego.NewNamespace("/api",
-		beego.NSNamespace("/excel",
+		beego.NSNamespace("/document",
 			beego.NSInclude(
 				&controllers.ExcelController{},
 			),

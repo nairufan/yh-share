@@ -19,7 +19,7 @@ const (
 
 // @router /upload [post]
 func (u *ExcelController) Upload() {
-	f, _, err := u.GetFile("records")
+	f, _, err := u.GetFile("attachment")
 	if f != nil {
 		defer f.Close()
 	}
