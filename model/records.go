@@ -1,11 +1,11 @@
 package model
 
-type Excel struct {
-	MetaFields                `bson:",inline"`
-	DocumentId string         `bson:"documentId"  json:"documentId"`
-	Tel        string         `bson:"tel" json:"tel"`
-	Name       string         `bson:"name" json:"name"`
-	Data       []string       `bson:"data" json:"data"`
+type Record struct {
+	MetaFields                 `bson:",inline"`
+	DocumentId  string         `bson:"documentId"  json:"documentId"`
+	QueryField1 string         `bson:"queryField1" json:"queryField1"`
+	QueryField2 string         `bson:"queryField2" json:"queryField2"`
+	Data        []string       `bson:"data" json:"data"`
 }
 
 

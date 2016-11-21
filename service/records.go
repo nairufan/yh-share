@@ -12,7 +12,7 @@ const (
 	collectionRecords = "records"
 )
 
-func AddRecords(records []*model.Excel, documentId string) []*model.Excel {
+func AddRecords(records []*model.Record, documentId string) []*model.Record {
 	if documentId == "" {
 		beego.Error("Document id must not empty")
 		panic("500")
@@ -32,10 +32,10 @@ func AddRecords(records []*model.Excel, documentId string) []*model.Excel {
 	return records
 }
 
-func Search(documentId string, query string) []*model.Excel {
+func Search(documentId string, query string) []*model.Record {
 	session := mongo.Get()
 	defer session.Close()
-	records := []*model.Excel{}
-	session.MustFind(collectionRecords, bson.M{"$or": []bson.M{bson.M{"tel": query}, bson.M{"name": query} }, "documentId": documentId}, &records)
+	records := []*model.Record{}
+	session.MustFind(collectionRecords, bson.M{"$or": []bson.M{bson.M{"queryField1": query}, bson.M{"queryField2": query} }, "documentId": documentId}, &records)
 	return records
 }

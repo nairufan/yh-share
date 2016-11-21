@@ -33,10 +33,11 @@ func (u *ExcelController) Upload() {
 }
 
 type saveRequest struct {
-	TelCol     int       `json:"telCol,required"`
-	NameCol    int       `json:"nameCol,required"`
-	Title      string    `json:"title,required"`
-	DocumentId string    `json:"documentId"` //for attach
+	SearchColumn  []int     `json:"searchColumn,required"`
+	DisplayColumn []int    `json:"displayColumn,required"`
+	TitleRow      int       `json:"titleRow,required"`
+	Title         string    `json:"title,required"`
+	DocumentId    string    `json:"documentId"` //for attach
 }
 // @router /save [post]
 func (u *ExcelController) Save() {
@@ -46,28 +47,42 @@ func (u *ExcelController) Save() {
 	if records == nil {
 		util.Panic(errors.New("No excel file found."))
 	}
-	excelRecords := []*model.Excel{}
+	recordModels := []*model.Record{}
+	beego.Info(records)
 	for _, record := range records {
 		if len(record) > 2 {
-			excelRecords = append(excelRecords, &model.Excel{
-				Tel: record[request.TelCol],
-				Name: record[request.NameCol],
+			recordModel := &model.Record{
 				Data: record,
-			})
+			}
+			if request.SearchColumn != nil && len(request.SearchColumn) > 0 {
+				recordModel.QueryField1 = record[request.SearchColumn[0]]
+				if len(request.SearchColumn) > 1 {
+					recordModel.QueryField2 = record[request.SearchColumn[1]]
+				}
+			}
+			recordModels = append(recordModels, recordModel)
 		}
+
 	}
 	if request.DocumentId == "" {
+		titleRow := records[request.TitleRow]
 		document := service.AddDocument(&model.Document{
 			UserId: u.GetUserId(),
 			Title: request.Title,
+			TitleFields: titleRow,
+			DisplayColumn: request.DisplayColumn,
 		})
 		request.DocumentId = document.Id
 	}
-	excelRecords = service.AddRecords(excelRecords, request.DocumentId)
+	recordModels = service.AddRecords(recordModels, request.DocumentId)
 	u.Data["json"] = map[string]string{
-		URL: "/query/" + excelRecords[0].DocumentId,
+		URL: "/query/" + recordModels[0].DocumentId,
 	}
 	u.ServeJSON()
+}
+
+type searchResponse struct {
+	
 }
 // @router /search [get]
 func (u *ExcelController) Search() {
