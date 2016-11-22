@@ -8,6 +8,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/nairufan/yh-share/controllers"
 	"github.com/nairufan/yh-share/filters"
+	"qiniupkg.com/x/rpc.v7/gob"
 )
 
 func main() {
@@ -18,4 +19,8 @@ func main() {
 	beego.ErrorController(&controllers.ErrorController{})
 	beego.InsertFilter("/api/excel/*", beego.BeforeRouter, filters.LoginCheck)
 	beego.Run()
+}
+
+func init() {
+	gob.Register([][]string{})
 }

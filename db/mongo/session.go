@@ -70,6 +70,16 @@ func (s *Session) MustFind(collection string, query interface{}, result interfac
 	}
 }
 
+func (s *Session) FindId(collectionName string, id interface{}, result interface{}) error {
+	return s.C(collectionName).FindId(id).One(result)
+}
+
+func (s *Session) MustFindId(collection string, id interface{}, result interface{}) {
+	if err := s.FindId(collection, id, result); err != nil {
+		util.Panic(err)
+	}
+}
+
 func (s *Session) FindWithOptions(collection string, query interface{}, options Option, result interface{}) error {
 	q := s.C(collection).Find(query)
 	if len(options.Sort) > 0 {

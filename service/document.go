@@ -21,6 +21,23 @@ func AddDocument(document *model.Document) *model.Document {
 	return document
 }
 
+func GetDocumentById(id string) *model.Document {
+	session := mongo.Get()
+	defer session.Close()
+	document := &model.Document{}
+	session.MustFindId(collectionDocuments, id, document)
+	return document
+}
+
+func GetDocumentByIds(ids []string) []*model.Document {
+	session := mongo.Get()
+	defer session.Close()
+	documents := []*model.Document{}
+	query := bson.M{"_id": bson.M{"$in": ids}}
+	session.MustFind(collectionDocuments, query, &documents)
+	return documents
+}
+
 func DocumentList(userId string, offset int, limit int) []*model.Document {
 	session := mongo.Get()
 	defer session.Close()
