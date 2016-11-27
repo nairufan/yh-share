@@ -17,7 +17,11 @@ func main() {
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
 	beego.ErrorController(&controllers.ErrorController{})
-	beego.InsertFilter("/api/excel/*", beego.BeforeRouter, filters.LoginCheck)
+	beego.InsertFilter("/api/document/upload", beego.BeforeRouter, filters.LoginCheck)
+	beego.InsertFilter("/api/document/save", beego.BeforeRouter, filters.LoginCheck)
+	beego.InsertFilter("/api/document/list", beego.BeforeRouter, filters.LoginCheck)
+	beego.InsertFilter("/api/document/changeTitle", beego.BeforeRouter, filters.LoginCheck)
+
 	beego.Run()
 }
 
