@@ -6,6 +6,7 @@ type Document struct {
 	Title         string         `bson:"title"  json:"title"`
 	TitleFields   []string       `bson:"titleFields"  json:"-"`
 	DisplayColumn []int          `bson:"displayColumn"  json:"-"`
+	ExpressColumn int            `bson:"expressColumn"  json:"-"`
 }
 
 

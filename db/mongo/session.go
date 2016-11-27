@@ -59,7 +59,6 @@ func (s *Session) MustInsert(collectionName string, docs ...interface{}) {
 	}
 }
 
-
 func (s *Session) Find(collection string, query interface{}, result interface{}) error {
 	return s.C(collection).Find(query).All(result)
 }
@@ -99,6 +98,16 @@ func (s *Session) FindWithOptions(collection string, query interface{}, options 
 
 func (s *Session) MustFindWithOptions(collection string, query interface{}, options Option, result interface{}) {
 	if err := s.FindWithOptions(collection, query, options, result); err != nil {
+		util.Panic(err)
+	}
+}
+
+func (s *Session) UpdateId(collection string, id interface{}, update interface{}) error {
+	return s.C(collection).UpdateId(id, update)
+}
+
+func (s *Session) MustUpdateId(collection string, id interface{}, update interface{}) {
+	if err := s.UpdateId(collection, id, update); err != nil {
 		util.Panic(err)
 	}
 }

@@ -42,3 +42,4 @@ func (b *BaseController) ClearExcel() [][]string {
 	b.SetSession(Excel, nil)
 	return excel
 }
+

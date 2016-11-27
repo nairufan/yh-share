@@ -21,6 +21,13 @@ func AddDocument(document *model.Document) *model.Document {
 	return document
 }
 
+func UpdateDocument(document *model.Document) *model.Document {
+	session := mongo.Get()
+	defer session.Close()
+	session.MustUpdateId(collectionDocuments, document.Id, document)
+	return document
+}
+
 func GetDocumentById(id string) *model.Document {
 	session := mongo.Get()
 	defer session.Close()

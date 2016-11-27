@@ -35,7 +35,8 @@ func (u *ExcelController) Upload() {
 
 type saveRequest struct {
 	SearchColumn  []int     `json:"searchColumn,required"`
-	DisplayColumn []int    `json:"displayColumn,required"`
+	DisplayColumn []int     `json:"displayColumn,required"`
+	ExpressColumn int       `json:"expressColumn,required"`
 	TitleRow      int       `json:"titleRow,required"`
 	Title         string    `json:"title,required"`
 	DocumentId    string    `json:"documentId"` //for attach
@@ -43,13 +44,15 @@ type saveRequest struct {
 // @router /save [post]
 func (u *ExcelController) Save() {
 	var request saveRequest
-	json.Unmarshal(u.Ctx.Input.RequestBody, &request)
+	if err := json.Unmarshal(u.Ctx.Input.RequestBody, &request); err != nil {
+		util.Panic(err)
+	}
 	records := u.ClearExcel()
 	if records == nil {
 		util.Panic(errors.New("No excel file found."))
 	}
 	recordModels := []*model.Record{}
-	beego.Info(records)
+	beego.Info(request)
 	for _, record := range records {
 		if len(record) > 2 {
 			recordModel := &model.Record{
@@ -67,11 +70,19 @@ func (u *ExcelController) Save() {
 	}
 	if request.DocumentId == "" {
 		titleRow := records[request.TitleRow]
+		newDisplayColumn := []int{}
+		newDisplayColumn = append(newDisplayColumn, request.ExpressColumn)
+		for _, col := range request.DisplayColumn {
+			if col != request.ExpressColumn {
+				newDisplayColumn = append(newDisplayColumn, col)
+			}
+		}
 		document := service.AddDocument(&model.Document{
 			UserId: u.GetUserId(),
 			Title: request.Title,
 			TitleFields: titleRow,
-			DisplayColumn: request.DisplayColumn,
+			DisplayColumn: newDisplayColumn,
+			ExpressColumn: request.ExpressColumn,
 		})
 		request.DocumentId = document.Id
 	}
@@ -92,7 +103,6 @@ func (u *ExcelController) Search() {
 	response := []*recordType{}
 	query := u.GetString("query")
 	key := u.GetString("documentId")
-	beego.Info(query)
 	records := service.Search(key, query)
 	documentIds := getDistinctIds(records)
 	documentMap := getDocumentMap(documentIds)
@@ -115,10 +125,49 @@ func (u *ExcelController) Search() {
 	u.Data["json"] = response
 	u.ServeJSON()
 }
+
+const timeFormat = "2006-01-02"
+
+type listTypeResponse struct {
+	TimeList []string `json:"timeList"`
+	DataMap  map[string][]*model.Document     `json:"dataMap"`
+}
+
 // @router /list [get]
 func (u *ExcelController) List() {
-	list := service.DocumentList(u.GetUserId(), 0, 10)
-	u.Data["json"] = list
+	response := &listTypeResponse{}
+	list := service.DocumentList(u.GetUserId(), 0, 100)
+	timeList := []string{}
+	dataMap := map[string][]*model.Document{}
+	for _, document := range list {
+		formatTime := document.CreatedTime.Format(timeFormat)
+		tmpDocumentList := dataMap[formatTime]
+		if tmpDocumentList == nil {
+			tmpDocumentList = []*model.Document{}
+			timeList = append(timeList, formatTime)
+		}
+		tmpDocumentList = append(tmpDocumentList, document)
+		dataMap[formatTime] = tmpDocumentList
+	}
+	response.DataMap = dataMap
+	response.TimeList = timeList
+	u.Data["json"] = response
+	u.ServeJSON()
+}
+
+type titleRequest struct {
+	Title string     `json:"title,required"`
+	Id    string     `json:"id,required"`
+}
+
+// @router /changeTitle [post]
+func (u *ExcelController) ChangeTitle() {
+	var request titleRequest
+	json.Unmarshal(u.Ctx.Input.RequestBody, &request)
+	document := service.GetDocumentById(request.Id)
+	document.Title = request.Title
+	service.UpdateDocument(document)
+	u.Data["json"] = document
 	u.ServeJSON()
 }
 
