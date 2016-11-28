@@ -5,7 +5,6 @@ import (
 	"time"
 	"github.com/astaxie/beego"
 	"gopkg.in/mgo.v2/bson"
-	"github.com/nairufan/yh-share/util"
 )
 
 const (
@@ -26,7 +25,7 @@ func init() {
 	mongodbUrl := beego.AppConfig.String("mongodb_url")
 	session, err := mgo.Dial(mongodbUrl)
 	if err != nil {
-		util.Panic(err)
+		panic(err)
 	}
 	globalSession = session
 }
@@ -55,7 +54,7 @@ func (s *Session) Insert(collectionName string, docs ...interface{}) error {
 
 func (s *Session) MustInsert(collectionName string, docs ...interface{}) {
 	if err := s.Insert(collectionName, docs...); err != nil {
-		util.Panic(err)
+		panic(err)
 	}
 }
 
@@ -65,7 +64,7 @@ func (s *Session) Find(collection string, query interface{}, result interface{})
 
 func (s *Session) MustFind(collection string, query interface{}, result interface{}) {
 	if err := s.Find(collection, query, result); err != nil {
-		util.Panic(err)
+		panic(err)
 	}
 }
 
@@ -75,7 +74,7 @@ func (s *Session) FindId(collectionName string, id interface{}, result interface
 
 func (s *Session) MustFindId(collection string, id interface{}, result interface{}) {
 	if err := s.FindId(collection, id, result); err != nil {
-		util.Panic(err)
+		panic(err)
 	}
 }
 
@@ -98,7 +97,7 @@ func (s *Session) FindWithOptions(collection string, query interface{}, options 
 
 func (s *Session) MustFindWithOptions(collection string, query interface{}, options Option, result interface{}) {
 	if err := s.FindWithOptions(collection, query, options, result); err != nil {
-		util.Panic(err)
+		panic(err)
 	}
 }
 
@@ -108,6 +107,6 @@ func (s *Session) UpdateId(collection string, id interface{}, update interface{}
 
 func (s *Session) MustUpdateId(collection string, id interface{}, update interface{}) {
 	if err := s.UpdateId(collection, id, update); err != nil {
-		util.Panic(err)
+		panic(err)
 	}
 }

@@ -15,16 +15,16 @@ func ParseFile(file multipart.File) [][]string {
 	bytes := make([]byte, size)
 	_, err := file.Read(bytes)
 	if err != nil {
-		Panic(err)
+		panic(err)
 	}
 	xlFile, err := xlsx.OpenBinary(bytes)
 	if err != nil {
 		beego.Error(err)
-		Panic(err)
+		panic(err)
 	}
 	sheets, err := xlFile.ToSlice()
 	if err != nil {
-		Panic(err)
+		panic(err)
 	}
 	if sheets != nil && len(sheets) > 0 {
 		return sheets[0]

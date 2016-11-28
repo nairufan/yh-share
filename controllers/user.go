@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"io/ioutil"
-	"github.com/nairufan/yh-share/util"
 	"qiniupkg.com/x/jsonutil.v7"
 )
 
@@ -40,12 +39,12 @@ func (u *UserController) WxLoginResolve() {
 	authUrl = fmt.Sprintf(authUrl, appId, secret, code)
 	resp, err := http.Get(authUrl)
 	if err != nil {
-		util.Panic(err)
+		panic(err)
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		util.Panic(err)
+		panic(err)
 	}
 	response := &authResponse{}
 	jsonutil.Unmarshal(string(body), response)

@@ -6,7 +6,6 @@ import (
 	_ "github.com/garyburd/redigo/redis"
 	_ "github.com/astaxie/beego/session/redis"
 	"github.com/astaxie/beego"
-	"github.com/nairufan/yh-share/controllers"
 	"github.com/nairufan/yh-share/filters"
 	"qiniupkg.com/x/rpc.v7/gob"
 )
@@ -16,7 +15,6 @@ func main() {
 		beego.BConfig.WebConfig.DirectoryIndex = true
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
-	beego.ErrorController(&controllers.ErrorController{})
 	beego.InsertFilter("/api/document/upload", beego.BeforeRouter, filters.LoginCheck)
 	beego.InsertFilter("/api/document/save", beego.BeforeRouter, filters.LoginCheck)
 	beego.InsertFilter("/api/document/list", beego.BeforeRouter, filters.LoginCheck)

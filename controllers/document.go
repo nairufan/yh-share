@@ -1,13 +1,13 @@
 package controllers
 
 import (
-	"github.com/nairufan/yh-share/util"
 	"encoding/json"
 	"github.com/nairufan/yh-share/model"
 	"github.com/nairufan/yh-share/service"
 	"github.com/astaxie/beego"
 	"errors"
 	"time"
+	"github.com/nairufan/yh-share/util"
 )
 
 type ExcelController struct {
@@ -25,7 +25,7 @@ func (u *ExcelController) Upload() {
 		defer f.Close()
 	}
 	if err != nil {
-		util.Panic(err)
+		panic(err)
 	}
 	records := util.ParseFile(f)
 	u.SetExcel(records)
@@ -45,11 +45,14 @@ type saveRequest struct {
 func (u *ExcelController) Save() {
 	var request saveRequest
 	if err := json.Unmarshal(u.Ctx.Input.RequestBody, &request); err != nil {
-		util.Panic(err)
+		panic(err)
 	}
+	beego.Info(request)
 	records := u.ClearExcel()
+	beego.Error(records)
 	if records == nil {
-		util.Panic(errors.New("No excel file found."))
+		beego.Error("No excel file found.")
+		panic(errors.New("No excel file found."))
 	}
 	recordModels := []*model.Record{}
 	beego.Info(request)
