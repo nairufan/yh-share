@@ -39,7 +39,7 @@ func (b *BaseController) getExcel() [][]string {
 
 func (b *BaseController) ClearExcel() [][]string {
 	excel := b.getExcel()
-	b.SetSession(Excel, nil)
+	b.DelSession(Excel)
 	return excel
 }
 
