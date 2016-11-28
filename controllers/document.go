@@ -43,6 +43,7 @@ type saveRequest struct {
 }
 // @router /save [post]
 func (u *ExcelController) Save() {
+	beego.Info(string(u.Ctx.Input.RequestBody))
 	var request saveRequest
 	if err := json.Unmarshal(u.Ctx.Input.RequestBody, &request); err != nil {
 		panic(err)
