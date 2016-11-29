@@ -41,6 +41,11 @@ type saveRequest struct {
 	Title         string    `json:"title,required"`
 	DocumentId    string    `json:"documentId"` //for attach
 }
+
+type saveResponse struct {
+	Id string    `json:"id"` //for attach
+}
+
 // @router /save [post]
 func (u *ExcelController) Save() {
 	beego.Info(string(u.Ctx.Input.RequestBody))
@@ -48,15 +53,12 @@ func (u *ExcelController) Save() {
 	if err := json.Unmarshal(u.Ctx.Input.RequestBody, &request); err != nil {
 		panic(err)
 	}
-	beego.Info(request)
 	records := u.ClearExcel()
-	beego.Error(records)
 	if records == nil {
 		beego.Error("No excel file found.")
 		panic(errors.New("No excel file found."))
 	}
 	recordModels := []*model.Record{}
-	beego.Info(request)
 	for _, record := range records {
 		if len(record) > 2 {
 			recordModel := &model.Record{
@@ -91,8 +93,8 @@ func (u *ExcelController) Save() {
 		request.DocumentId = document.Id
 	}
 	recordModels = service.AddRecords(recordModels, request.DocumentId)
-	u.Data["json"] = map[string]string{
-		URL: "/api/document/list",
+	u.Data["json"] = &saveResponse{
+		Id: request.DocumentId,
 	}
 	u.ServeJSON()
 }
