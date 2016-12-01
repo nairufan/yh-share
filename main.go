@@ -23,6 +23,7 @@ func main() {
 	beego.SetStaticPath("/index", "static/uhdingdan.html")
 	beego.SetStaticPath("/uhdingdan.js", "static/uhdingdan.js")
 	beego.SetStaticPath("/search/uhsearch.js", "static/uhsearch.js")
+	beego.SetStaticPath("/MP_verify_h0emLIGJ0SsISIPS.txt", "static/MP_verify_h0emLIGJ0SsISIPS.txt")
 	beego.Run()
 }
 
