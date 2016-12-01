@@ -2,12 +2,15 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+	"gopkg.in/bluesuncorp/validator.v5"
 )
 
 const (
 	UserID = "userId"
 	Excel = "excel"
 )
+
+var validate = validator.New("validate", validator.BakedInValidators)
 
 type BaseController struct {
 	beego.Controller

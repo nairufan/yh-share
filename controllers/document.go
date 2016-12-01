@@ -14,10 +14,6 @@ type ExcelController struct {
 	BaseController
 }
 
-const (
-	URL = "url"
-)
-
 // @router /upload [post]
 func (u *ExcelController) Upload() {
 	f, _, err := u.GetFile("attachment")
@@ -34,12 +30,12 @@ func (u *ExcelController) Upload() {
 }
 
 type saveRequest struct {
-	SearchColumn  []int     `json:"searchColumn,required"`
-	DisplayColumn []int     `json:"displayColumn,required"`
-	ExpressColumn int       `json:"expressColumn,required"`
-	TitleRow      int       `json:"titleRow,required"`
-	Title         string    `json:"title,required"`
-	DocumentId    string    `json:"documentId"` //for attach
+	SearchColumn  []int     `json:"searchColumn" validate:"required"`
+	DisplayColumn []int     `json:"displayColumn" validate:"required"`
+	ExpressColumn int       `json:"expressColumn" validate:"required"`
+	TitleRow      int       `json:"titleRow" validate:"required"`
+	Title         string    `json:"title" validate:"required"`
+	DocumentId    string    `json:"documentId" validate:"required"` //for attach
 }
 
 type saveResponse struct {
@@ -52,6 +48,10 @@ func (u *ExcelController) Save() {
 	var request saveRequest
 	if err := json.Unmarshal(u.Ctx.Input.RequestBody, &request); err != nil {
 		panic(err)
+	}
+	errs := validate.Struct(request)
+	if errs != nil {
+		panic(errs)
 	}
 	records := u.ClearExcel()
 	if records == nil {
@@ -162,14 +162,18 @@ func (u *ExcelController) List() {
 }
 
 type titleRequest struct {
-	Title string     `json:"title,required"`
-	Id    string     `json:"id,required"`
+	Title string     `json:"title" validate:"required"`
+	Id    string     `json:"id" validate:"required"`
 }
 
 // @router /changeTitle [post]
 func (u *ExcelController) ChangeTitle() {
 	var request titleRequest
 	json.Unmarshal(u.Ctx.Input.RequestBody, &request)
+	errs := validate.Struct(request)
+	if errs != nil {
+		panic(errs)
+	}
 	document := service.GetDocumentById(request.Id)
 	document.Title = request.Title
 	service.UpdateDocument(document)
