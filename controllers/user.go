@@ -50,6 +50,7 @@ func (u *UserController) WxLoginResolve() {
 	jsonutil.Unmarshal(string(body), response)
 	beego.Info(response)
 	u.SetUserId(response.Openid)
+	u.Redirect("/html/uhdingdan.html", 301)
 }
 
 // @router /mock-login [get]

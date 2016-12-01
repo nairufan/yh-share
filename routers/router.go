@@ -10,6 +10,8 @@ package routers
 import (
 	"github.com/nairufan/yh-share/controllers"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/context"
+	"io/ioutil"
 )
 
 func init() {
@@ -25,5 +27,13 @@ func init() {
 			),
 		),
 	)
+	beego.Get("/search/:id", func(ctx *context.Context){
+		content, err := ioutil.ReadFile("static/uhsearch.html")
+		if err != nil {
+			panic(err)
+		}
+		ctx.Output.Header("Content-Type", "text/html; charset=utf-8")
+		ctx.Output.Body(content)
+	})
 	beego.AddNamespace(ns)
 }
