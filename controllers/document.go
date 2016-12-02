@@ -8,6 +8,7 @@ import (
 	"errors"
 	"time"
 	"github.com/nairufan/yh-share/util"
+	"strings"
 )
 
 type ExcelController struct {
@@ -65,9 +66,9 @@ func (u *ExcelController) Save() {
 				Data: record,
 			}
 			if request.SearchColumn != nil && len(request.SearchColumn) > 0 {
-				recordModel.QueryField1 = record[request.SearchColumn[0]]
+				recordModel.QueryField1 = strings.TrimSpace(record[request.SearchColumn[0]])
 				if len(request.SearchColumn) > 1 {
-					recordModel.QueryField2 = record[request.SearchColumn[1]]
+					recordModel.QueryField2 = strings.TrimSpace(record[request.SearchColumn[1]])
 				}
 			}
 			recordModels = append(recordModels, recordModel)
