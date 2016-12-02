@@ -19,7 +19,7 @@ func main() {
 	beego.InsertFilter("/api/document/save", beego.BeforeRouter, filters.LoginCheck)
 	beego.InsertFilter("/api/document/list", beego.BeforeRouter, filters.LoginCheck)
 	beego.InsertFilter("/api/document/changeTitle", beego.BeforeRouter, filters.LoginCheck)
-	beego.InsertFilter("/html/uhdingdan.html", beego.BeforeRouter, filters.LoginCheck)
+	beego.InsertFilter("/index", beego.BeforeRouter, filters.LoginCheck)
 	beego.SetStaticPath("/index", "static/uhdingdan.html")
 	beego.SetStaticPath("/uhdingdan.js", "static/uhdingdan.js")
 	beego.SetStaticPath("/search/uhsearch.js", "static/uhsearch.js")
