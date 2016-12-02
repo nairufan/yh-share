@@ -46,9 +46,10 @@ func (u *UserController) WxLoginResolve() {
 	if err != nil {
 		panic(err)
 	}
+	beego.Info(body)
 	response := &authResponse{}
 	jsonutil.Unmarshal(string(body), response)
-	beego.Info(response)
+	beego.Info("openId:", response.Openid)
 	u.SetUserId(response.Openid)
 	u.Redirect("/index", 301)
 }
