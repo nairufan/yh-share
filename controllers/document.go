@@ -33,9 +33,9 @@ type saveRequest struct {
 	SearchColumn  []int     `json:"searchColumn" validate:"required"`
 	DisplayColumn []int     `json:"displayColumn" validate:"required"`
 	ExpressColumn int       `json:"expressColumn" validate:"required"`
-	TitleRow      int       `json:"titleRow" validate:"required"`
+	TitleRow      int       `json:"titleRow"`
 	Title         string    `json:"title" validate:"required"`
-	DocumentId    string    `json:"documentId" validate:"required"` //for attach
+	DocumentId    string    `json:"documentId"` //for attach
 }
 
 type saveResponse struct {
