@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"io/ioutil"
-	"qiniupkg.com/x/jsonutil.v7"
+	"encoding/json"
 )
 
 type UserController struct {
@@ -46,9 +46,9 @@ func (u *UserController) WxLoginResolve() {
 	if err != nil {
 		panic(err)
 	}
-	beego.Info(body)
+	beego.Info(string(body))
 	response := &authResponse{}
-	jsonutil.Unmarshal(string(body), response)
+	json.Unmarshal(body, response)
 	beego.Info("openId:", response.Openid)
 	u.SetUserId(response.Openid)
 	u.Redirect("/index", 301)
