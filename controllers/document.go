@@ -9,10 +9,15 @@ import (
 	"time"
 	"github.com/nairufan/yh-share/util"
 	"strings"
+	"os"
 )
 
 type ExcelController struct {
 	BaseController
+}
+
+type Size interface {
+	Size() int64
 }
 
 // @router /upload [post]
@@ -24,7 +29,20 @@ func (u *ExcelController) Upload() {
 	if err != nil {
 		panic(err)
 	}
-	records := util.ParseFile(f)
+	size := f.(Size).Size()
+	bytes := make([]byte, size)
+	_, err = f.Read(bytes)
+	if err != nil {
+		panic(err)
+	}
+	records, err := util.ParseXlsxFile(bytes)
+	if err != nil {
+		beego.Error(err)
+		filePath := util.SaveFile(bytes)
+		records = util.ParseXlsFile(filePath)
+		err := os.Remove(filePath)
+		beego.Error(err)
+	}
 	u.SetExcel(records)
 	u.Data["json"] = records
 	u.ServeJSON();
