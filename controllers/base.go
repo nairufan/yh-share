@@ -3,11 +3,15 @@ package controllers
 import (
 	"github.com/astaxie/beego"
 	"gopkg.in/bluesuncorp/validator.v5"
+	"github.com/nairufan/yh-share/util"
+	"time"
 )
 
 const (
 	UserID = "userId"
 	Excel = "excel"
+	Token = "token"
+	Expire = "expire"
 )
 
 var validate = validator.New("validate", validator.BakedInValidators)
@@ -46,3 +50,31 @@ func (b *BaseController) ClearExcel() [][]string {
 	return excel
 }
 
+func (b *BaseController) SetToken(token string) {
+	b.SetSession(Token, token)
+}
+
+func (b *BaseController) GetToken() string {
+	token := b.GetSession(Token)
+	expire := b.GetExpire()
+	now := time.Now().Unix()
+	if token == nil || now > expire {
+		newToken := util.GetToken()
+		b.SetToken(newToken.AccessToken)
+		b.SetExpire(newToken.ExpiresIn)
+		token = newToken.AccessToken
+	}
+	return token.(string)
+}
+
+func (b *BaseController) SetExpire(expire int64) {
+	b.SetSession(Expire, expire + time.Now().Unix() - util.Delta)
+}
+
+func (b *BaseController) GetExpire() int64 {
+	expire := b.GetSession(Expire)
+	if expire == nil {
+		return 0
+	}
+	return expire.(int64)
+}

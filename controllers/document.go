@@ -51,7 +51,7 @@ func (u *ExcelController) Upload() {
 type saveRequest struct {
 	SearchColumn  []int     `json:"searchColumn" validate:"required"`
 	DisplayColumn []int     `json:"displayColumn" validate:"required"`
-	ExpressColumn int       `json:"expressColumn" validate:"required"`
+	ExpressColumn int       `json:"expressColumn"`
 	TitleRow      int       `json:"titleRow"`
 	Title         string    `json:"title" validate:"required"`
 	DocumentId    string    `json:"documentId"` //for attach

@@ -12,6 +12,8 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"io/ioutil"
+	"strings"
+	"github.com/nairufan/yh-share/service"
 )
 
 func init() {
@@ -27,13 +29,18 @@ func init() {
 			),
 		),
 	)
-	beego.Get("/search/:id", func(ctx *context.Context){
+	beego.Get("/search/:id", func(ctx *context.Context) {
 		content, err := ioutil.ReadFile("static/uhsearch.html")
 		if err != nil {
 			panic(err)
 		}
+		id := ctx.Input.Param(":id")
+		document := service.GetDocumentById(id)
+		beego.Info(document)
+		contentString := string(content)
+		contentString = strings.Replace(contentString, "{{$title}}", document.Title, 1)
 		ctx.Output.Header("Content-Type", "text/html; charset=utf-8")
-		ctx.Output.Body(content)
+		ctx.Output.Body([]byte(contentString))
 	})
 	beego.AddNamespace(ns)
 }

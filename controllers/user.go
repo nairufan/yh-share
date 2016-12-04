@@ -24,7 +24,7 @@ func (u *UserController) WxLogin() {
 
 type authResponse struct {
 	AccessToken  string       `json:"access_token"`
-	ExpiresIn    int          `json:"expires_in"`
+	ExpiresIn    int64          `json:"expires_in"`
 	RefreshToken string       `json:"refresh_token"`
 	Openid       string       `json:"openid"`
 	Scope        string       `json:"scope"`
@@ -35,7 +35,7 @@ func (u *UserController) WxLoginResolve() {
 	code := u.GetString("code")
 	appId := beego.AppConfig.String("wechat.appId")
 	secret := beego.AppConfig.String("wechat.appSecret")
-	authUrl := beego.AppConfig.String("wechat.accessTokenUrl")
+	authUrl := beego.AppConfig.String("wechat.openIdUrl")
 	authUrl = fmt.Sprintf(authUrl, appId, secret, code)
 	resp, err := http.Get(authUrl)
 	if err != nil {
@@ -51,6 +51,9 @@ func (u *UserController) WxLoginResolve() {
 	json.Unmarshal(body, response)
 	beego.Info("openId:", response.Openid)
 	u.SetUserId(response.Openid)
+	//u.SetToken(response.AccessToken)
+	//u.SetExpire(response.ExpiresIn)
+	beego.Info(u.GetToken(), u.GetExpire())
 	u.Redirect("/index", 301)
 }
 
