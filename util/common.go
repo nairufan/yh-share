@@ -42,9 +42,9 @@ func ParseXlsFile(filePath string) [][]string {
 				}
 			}
 		}
-		records := make([][]string, maxRow + 1, maxColumn + 1)
+		records := [][]string{}
 		for i := 0; i <= maxRow; i++ {
-			records[i] = make([]string, maxColumn + 1)
+			records = append(records, make([]string, maxColumn + 1))
 		}
 		for i := 0; i <= maxRow; i++ {
 			row := sheet1.Rows[uint16(i)]
@@ -59,7 +59,7 @@ func ParseXlsFile(filePath string) [][]string {
 
 			}
 		}
-		return records
+		return trimArray(records)
 	}
 
 	return [][]string{}
@@ -73,4 +73,20 @@ func SaveFile(bytes []byte) string {
 		panic(err)
 	}
 	return fileName
+}
+
+func trimArray(records [][]string) [][]string {
+	result := [][]string{}
+	for _, list := range records {
+		notValid := true
+		for _, val := range list {
+			if val != "" {
+				notValid = false
+			}
+		}
+		if !notValid {
+			result = append(result, list)
+		}
+	}
+	return result
 }
