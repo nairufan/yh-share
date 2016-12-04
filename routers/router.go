@@ -36,7 +36,6 @@ func init() {
 		}
 		id := ctx.Input.Param(":id")
 		document := service.GetDocumentById(id)
-		beego.Info(document)
 		contentString := string(content)
 		contentString = strings.Replace(contentString, "{{$title}}", document.Title, 1)
 		ctx.Output.Header("Content-Type", "text/html; charset=utf-8")
