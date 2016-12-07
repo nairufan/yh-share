@@ -6,7 +6,6 @@ import (
 	"time"
 	"gopkg.in/mgo.v2/bson"
 	"github.com/nairufan/yh-share/util"
-	"github.com/astaxie/beego"
 	"strconv"
 )
 
@@ -18,7 +17,6 @@ func AddDocument(document *model.Document) *model.Document {
 	time := time.Now()
 	prefix := util.GetRandomString(2)
 	nextId := Increase()
-	beego.Info("######", prefix, nextId)
 	document.Id = prefix + strconv.FormatInt(nextId, 16)
 	document.CreatedTime = &time
 	session := mongo.Get()
