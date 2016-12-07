@@ -6,6 +6,7 @@ import (
 	"github.com/astaxie/beego"
 	"gopkg.in/mgo.v2/bson"
 	"io/ioutil"
+	"math/rand"
 )
 
 func ParseXlsxFile(bytes []byte) ([][]string, error) {
@@ -87,6 +88,22 @@ func trimArray(records [][]string) [][]string {
 		if !notValid {
 			result = append(result, list)
 		}
+	}
+	return result
+}
+
+func GetRandomString(size int) string {
+	chars := []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
+		"k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
+		"u", "v", "w", "x", "y", "z",
+		"A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
+		"K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+		"U", "V", "W", "X", "Y", "Z"}
+	charsLen := len(chars)
+	result := ""
+	for i := 0; i < size; i++ {
+		index := rand.Intn(charsLen)
+		result += chars[index]
 	}
 	return result
 }
