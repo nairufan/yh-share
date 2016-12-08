@@ -1,0 +1,10 @@
+{
+  "version": 1.0,
+  "watch_ext": ["html", "js"],
+  "dir_structure": {
+    "watch_all": false,
+    "others": ["static/"]
+  },
+  "cmd_args": [],
+  "envs": []
+}
