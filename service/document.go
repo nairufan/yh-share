@@ -82,7 +82,7 @@ func DocumentStatistics(start time.Time, end time.Time) []*model.Statistic {
 	match := bson.M{}
 	date := bson.M{"$dateToString": bson.M{"format": "%Y-%m-%d", "date": "$createdTime"}}
 	group["$group"] = bson.M{"_id": date, "count": bson.M{"$sum": 1}}
-	match["$match"] = bson.M{"createdTime": bson.M{"$gte": start, "$lt": end}}
+	match["$match"] = bson.M{"createdTime": bson.M{"$gte": start, "$lte": end}}
 	session.MustPipeAll(collectionDocuments, []bson.M{match, group}, &results)
 	return results
 }
