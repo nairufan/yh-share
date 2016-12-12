@@ -49,6 +49,17 @@ func GetDocumentByIds(ids []string) []*model.Document {
 	return documents
 }
 
+func GetDocumentsByEndDay(userId string, days int) []*model.Document {
+	session := mongo.Get()
+	defer session.Close()
+	now := time.Now()
+	past := now.AddDate(0, 0, -1 * days)
+	documents := []*model.Document{}
+	query := bson.M{"userId": userId, "createdTime": bson.M{"$gt": past}}
+	session.MustFind(collectionDocuments, query, &documents)
+	return documents
+}
+
 func DocumentList(userId string, offset int, limit int) []*model.Document {
 	session := mongo.Get()
 	defer session.Close()

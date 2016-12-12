@@ -58,7 +58,8 @@ type saveRequest struct {
 }
 
 type saveResponse struct {
-	Id string    `json:"id"` //for attach
+	Id     string    `json:"id"`
+	UserId string    `json:"userId"`
 }
 
 // @router /save [post]
@@ -78,8 +79,8 @@ func (u *ExcelController) Save() {
 		panic(errors.New("No excel file found."))
 	}
 	recordModels := []*model.Record{}
-	for _, record := range records {
-		if len(record) > 2 {
+	for index, record := range records {
+		if len(record) > 2 && index != request.TitleRow {
 			recordModel := &model.Record{
 				Data: record,
 			}
@@ -114,6 +115,7 @@ func (u *ExcelController) Save() {
 	recordModels = service.AddRecords(recordModels, request.DocumentId)
 	u.Data["json"] = &saveResponse{
 		Id: request.DocumentId,
+		UserId: u.GetUserId(),
 	}
 	u.ServeJSON()
 }
@@ -131,6 +133,37 @@ func (u *ExcelController) Search() {
 	records := service.Search(key, query)
 	documentIds := getDistinctIds(records)
 	documentMap := getDocumentMap(documentIds)
+	for _, record := range records {
+		resultRecord := []string{}
+		resultTitle := []string{}
+		document := documentMap[record.DocumentId]
+		data := record.Data
+		title := document.TitleFields
+		for _, col := range document.DisplayColumn {
+			resultRecord = append(resultRecord, data[col])
+			resultTitle = append(resultTitle, title[col])
+		}
+		response = append(response, &recordType{
+			Title: resultTitle,
+			Data: resultRecord,
+			CreateTime: document.CreatedTime,
+		})
+	}
+	u.Data["json"] = response
+	u.ServeJSON()
+}
+// @router /searchByUser [get]
+func (u *ExcelController) SearchByUser() {
+	response := []*recordType{}
+	query := u.GetString("query")
+	userId := u.GetString("userId")
+	documents := service.GetDocumentsByEndDay(userId, 30)
+	documentIds := []string{}
+	for _, document := range documents {
+		documentIds = append(documentIds, document.Id)
+	}
+	records := service.SearchAll(documentIds, query)
+	documentMap := convertDocumentMap(documents)
 	for _, record := range records {
 		resultRecord := []string{}
 		resultTitle := []string{}
@@ -215,6 +248,14 @@ func getDistinctIds(records []*model.Record) []string {
 func getDocumentMap(ids []string) map[string]*model.Document {
 	documentMap := map[string]*model.Document{}
 	documents := service.GetDocumentByIds(ids)
+	for _, document := range documents {
+		documentMap[document.Id] = document
+	}
+	return documentMap
+}
+
+func convertDocumentMap(documents []*model.Document) map[string]*model.Document {
+	documentMap := map[string]*model.Document{}
 	for _, document := range documents {
 		documentMap[document.Id] = document
 	}
