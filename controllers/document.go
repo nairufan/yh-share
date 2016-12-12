@@ -226,10 +226,20 @@ func (u *ExcelController) ChangeTitle() {
 	if errs != nil {
 		panic(errs)
 	}
+
 	document := service.GetDocumentById(request.Id)
 	document.Title = request.Title
 	service.UpdateDocument(document)
 	u.Data["json"] = document
+	u.ServeJSON()
+}
+
+// @router /statistics [get]
+func (u *ExcelController) Statistics() {
+	now := time.Now()
+	start := now.AddDate(0, 0, -10)
+	statistics := service.Statistics(start, now)
+	u.Data["json"] = statistics
 	u.ServeJSON()
 }
 

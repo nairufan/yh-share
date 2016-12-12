@@ -55,7 +55,7 @@ func GetDocumentsByEndDay(userId string, days int) []*model.Document {
 	now := time.Now()
 	past := now.AddDate(0, 0, -1 * days)
 	documents := []*model.Document{}
-	query := bson.M{"userId": userId, "createdTime": bson.M{"$gt": past}}
+	query := bson.M{"userId": userId, "createdTime": bson.M{"$gte": past}}
 	session.MustFind(collectionDocuments, query, &documents)
 	return documents
 }
@@ -72,4 +72,17 @@ func DocumentList(userId string, offset int, limit int) []*model.Document {
 	}
 	session.MustFindWithOptions(collectionDocuments, bson.M{"userId": userId}, option, &documents)
 	return documents
+}
+
+func Statistics(start time.Time, end time.Time) []*model.Statistic {
+	results := []*model.Statistic{}
+	session := mongo.Get()
+	defer session.Close()
+	group := bson.M{}
+	match := bson.M{}
+	date := bson.M{"$dateToString": bson.M{"format": "%Y-%m-%d", "date": "$createdTime"}}
+	group["$group"] = bson.M{"_id": date, "count": bson.M{"$sum": 1}}
+	match["$match"] = bson.M{"createdTime": bson.M{"$gte": start, "$lt": end}}
+	session.MustPipeAll(collectionDocuments, []bson.M{match, group}, &results)
+	return results
 }

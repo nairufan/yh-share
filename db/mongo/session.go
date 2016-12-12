@@ -110,3 +110,13 @@ func (s *Session) MustUpdateId(collection string, id interface{}, update interfa
 		panic(err)
 	}
 }
+
+func (s *Session) PipeAll(collection string, pipeline []bson.M, result interface{}) error {
+	return s.C(collection).Pipe(pipeline).All(result)
+}
+
+func (s *Session) MustPipeAll(collection string, pipeline []bson.M, result interface{}) {
+	if err := s.PipeAll(collection, pipeline, result); err != nil {
+		panic(err)
+	}
+}

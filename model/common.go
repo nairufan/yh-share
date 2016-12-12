@@ -13,3 +13,8 @@ type MetaFields struct {
 func NewId() string {
 	return bson.NewObjectId().Hex()
 }
+
+type Statistic struct {
+	Id    string       `bson:"_id" json:"_id"`
+	Count int          `bson:"count"  json:"count"`
+}
