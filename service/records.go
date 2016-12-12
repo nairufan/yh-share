@@ -47,3 +47,22 @@ func SearchAll(documentIds []string, query string) []*model.Record {
 	session.MustFind(collectionRecords, bson.M{"$or": []bson.M{bson.M{"queryField1": query}, bson.M{"queryField2": query} }, "documentId": bson.M{"$in": documentIds}}, &records)
 	return records
 }
+
+func RecordsStatistics(start time.Time, end time.Time) []*model.Statistic {
+	results := []*model.Statistic{}
+	session := mongo.Get()
+	defer session.Close()
+	group := bson.M{}
+	match := bson.M{}
+	date := bson.M{"$dateToString": bson.M{"format": "%Y-%m-%d", "date": "$createdTime"}}
+	group["$group"] = bson.M{"_id": date, "count": bson.M{"$sum": 1}}
+	match["$match"] = bson.M{"createdTime": bson.M{"$gte": start, "$lte": end}}
+	session.MustPipeAll(collectionRecords, []bson.M{match, group}, &results)
+	return results
+}
+
+func RecordsCount() int {
+	session := mongo.Get()
+	defer session.Close()
+	return session.MustCount(collectionRecords)
+}

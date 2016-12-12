@@ -247,6 +247,19 @@ func (u *ExcelController) Statistics() {
 	u.ServeJSON()
 }
 
+// @router /order-statistics [get]
+func (u *ExcelController) OrderStatistics() {
+	response := model.StatisticResponse{}
+	now := time.Now()
+	start := now.AddDate(0, 0, -10)
+	statistics := service.RecordsStatistics(start, now)
+	total := service.RecordsCount()
+	response.Statistics = statistics
+	response.Total = total
+	u.Data["json"] = response
+	u.ServeJSON()
+}
+
 func getDistinctIds(records []*model.Record) []string {
 	documentIds := []string{}
 	documentIdMap := map[string]bool{}
