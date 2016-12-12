@@ -120,3 +120,11 @@ func (s *Session) MustPipeAll(collection string, pipeline []bson.M, result inter
 		panic(err)
 	}
 }
+
+func (s *Session) MustCount(collection string) int {
+	if count, err := s.C(collection).Count(); err != nil {
+		panic(err)
+	} else {
+		return count
+	}
+}

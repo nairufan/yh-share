@@ -45,6 +45,5 @@ func SearchAll(documentIds []string, query string) []*model.Record {
 	defer session.Close()
 	records := []*model.Record{}
 	session.MustFind(collectionRecords, bson.M{"$or": []bson.M{bson.M{"queryField1": query}, bson.M{"queryField2": query} }, "documentId": bson.M{"$in": documentIds}}, &records)
-	beego.Info("#####", records)
 	return records
 }

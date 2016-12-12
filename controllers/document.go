@@ -236,10 +236,14 @@ func (u *ExcelController) ChangeTitle() {
 
 // @router /statistics [get]
 func (u *ExcelController) Statistics() {
+	response := model.StatisticResponse{}
 	now := time.Now()
 	start := now.AddDate(0, 0, -10)
-	statistics := service.Statistics(start, now)
-	u.Data["json"] = statistics
+	statistics := service.DocumentStatistics(start, now)
+	total := service.DocumentCount()
+	response.Statistics = statistics
+	response.Total = total
+	u.Data["json"] = response
 	u.ServeJSON()
 }
 

@@ -74,7 +74,7 @@ func DocumentList(userId string, offset int, limit int) []*model.Document {
 	return documents
 }
 
-func Statistics(start time.Time, end time.Time) []*model.Statistic {
+func DocumentStatistics(start time.Time, end time.Time) []*model.Statistic {
 	results := []*model.Statistic{}
 	session := mongo.Get()
 	defer session.Close()
@@ -85,4 +85,10 @@ func Statistics(start time.Time, end time.Time) []*model.Statistic {
 	match["$match"] = bson.M{"createdTime": bson.M{"$gte": start, "$lt": end}}
 	session.MustPipeAll(collectionDocuments, []bson.M{match, group}, &results)
 	return results
+}
+
+func DocumentCount() int {
+	session := mongo.Get()
+	defer session.Close()
+	return session.MustCount(collectionDocuments)
 }

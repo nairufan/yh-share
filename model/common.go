@@ -18,3 +18,8 @@ type Statistic struct {
 	Id    string       `bson:"_id" json:"_id"`
 	Count int          `bson:"count"  json:"count"`
 }
+
+type StatisticResponse struct {
+	Statistics []*Statistic   `json:"statistics"`
+	Total      int            `json:"total"`
+}
