@@ -27,5 +27,6 @@ func init() {
 	)
 	beego.Get("/search/:id", controllers.Search)
 	beego.Get("/s/:id", controllers.Search)
+	beego.Get("/u/:id", controllers.SearchByUser)
 	beego.AddNamespace(ns)
 }

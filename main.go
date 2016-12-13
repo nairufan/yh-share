@@ -24,6 +24,7 @@ func main() {
 	beego.SetStaticPath("/uhdingdan.js", "static/uhdingdan.js")
 	beego.SetStaticPath("/search/uhsearch.js", "static/uhsearch.js")
 	beego.SetStaticPath("/s/uhsearch.js", "static/uhsearch.js")
+	beego.SetStaticPath("/u/uhsearchall.js", "static/uhsearchall.js")
 	beego.SetStaticPath("/MP_verify_h0emLIGJ0SsISIPS.txt", "static/MP_verify_h0emLIGJ0SsISIPS.txt")
 	beego.Run()
 }

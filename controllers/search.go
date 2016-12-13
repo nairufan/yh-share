@@ -19,3 +19,14 @@ func Search(ctx *context.Context) {
 	ctx.Output.Header("Content-Type", "text/html; charset=utf-8")
 	ctx.Output.Body([]byte(contentString))
 }
+
+func SearchByUser(ctx *context.Context) {
+	content, err := ioutil.ReadFile("static/uhsearchall.html")
+	if err != nil {
+		panic(err)
+	}
+	contentString := string(content)
+	contentString = strings.Replace(contentString, "{{$title}}", "优迹搜索", 1)
+	ctx.Output.Header("Content-Type", "text/html; charset=utf-8")
+	ctx.Output.Body([]byte(contentString))
+}
