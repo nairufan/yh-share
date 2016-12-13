@@ -84,7 +84,7 @@ func (u *UserController) AdminLogin() {
 		panic(errs)
 	}
 	if validateAccount(request.Tel, request.Password) {
-		u.SetUserId("12345678910")
+		u.SetUserId(request.Tel)
 		u.SetSession("role", "admin")
 		response.Success = true
 	} else {

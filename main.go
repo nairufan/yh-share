@@ -19,6 +19,7 @@ func main() {
 	beego.InsertFilter("/api/document/save", beego.BeforeRouter, filters.LoginCheck)
 	beego.InsertFilter("/api/document/list", beego.BeforeRouter, filters.LoginCheck)
 	beego.InsertFilter("/api/document/changeTitle", beego.BeforeRouter, filters.LoginCheck)
+	beego.InsertFilter("/statistic.html", beego.BeforeRouter, filters.AdminCheck)
 	beego.InsertFilter("/index", beego.BeforeRouter, filters.LoginCheck)
 	beego.SetStaticPath("/index", "static/uhdingdan.html")
 	beego.SetStaticPath("/uhdingdan.js", "static/uhdingdan.js")
@@ -26,6 +27,10 @@ func main() {
 	beego.SetStaticPath("/s/uhsearch.js", "static/uhsearch.js")
 	beego.SetStaticPath("/u/uhsearchall.js", "static/uhsearchall.js")
 	beego.SetStaticPath("/MP_verify_h0emLIGJ0SsISIPS.txt", "static/MP_verify_h0emLIGJ0SsISIPS.txt")
+	//admin
+	beego.SetStaticPath("/build/common.js", "static/admin/build/common.js")
+	beego.SetStaticPath("/build/statistic.js", "static/admin/build/statistic.js")
+	beego.SetStaticPath("/build/login.js", "static/admin/build/login.js")
 	beego.Run()
 }
 
