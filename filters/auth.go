@@ -2,7 +2,6 @@ package filters
 
 import (
 	"github.com/astaxie/beego/context"
-	"github.com/astaxie/beego"
 )
 
 const (
@@ -19,8 +18,7 @@ func LoginCheck(ctx *context.Context) {
 
 func AdminCheck(ctx *context.Context) {
 	val, ok := ctx.Input.Session(Role).(string)
-	beego.Info(val, ok)
 	if !ok || val != "admin" {
-		ctx.Redirect(301, "/login.html")
+		ctx.Redirect(302, "/login.html")
 	}
 }
