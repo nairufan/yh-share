@@ -61,3 +61,46 @@ func (u *UserController) WxLoginResolve() {
 func (u *UserController) MockLogin() {
 	u.SetUserId("1111")
 }
+
+type loginRequest struct {
+	Tel      string       `json:"tel" validate:"required"`
+	Password string       `json:"password" validate:"required"`
+}
+
+type loginResponse struct {
+	Success bool       `json:"success"`
+	Msg     string     `json:"msg"`
+}
+
+// @router /admin-login [post]
+func (u *UserController) AdminLogin() {
+	var request loginRequest
+	response := &loginResponse{}
+	if err := json.Unmarshal(u.Ctx.Input.RequestBody, &request); err != nil {
+		panic(err)
+	}
+	errs := validate.Struct(request)
+	if errs != nil {
+		panic(errs)
+	}
+	if validateAccount(request.Tel, request.Password) {
+		u.SetUserId("12345678910")
+		u.SetSession("role", "admin")
+		response.Success = true
+	} else {
+		response.Success = false
+		response.Msg = "tel or password is error."
+	}
+	u.Data["json"] = response
+	u.ServeJSON()
+}
+
+func validateAccount(tel string, password string) bool {
+	if "12345678910" != tel {
+		return false
+	}
+	if password != "jl@2016" {
+		return false
+	}
+	return true
+}
