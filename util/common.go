@@ -9,12 +9,8 @@ import (
 	"math/rand"
 )
 
-func ParseXlsxFile(bytes []byte) ([][]string, error) {
-	xlFile, err := xlsx.OpenBinary(bytes)
-	if err != nil {
-		return [][]string{}, err
-	}
-	sheets, err := xlFile.ToSlice()
+func parseXlsFile(file *xlsx.File) ([][]string, error) {
+	sheets, err := file.ToSlice()
 	if err != nil {
 		return [][]string{}, err
 	}
@@ -22,6 +18,22 @@ func ParseXlsxFile(bytes []byte) ([][]string, error) {
 		return sheets[0], nil
 	}
 	return [][]string{}, nil
+}
+
+func ParseXlsxFile(bytes []byte) ([][]string, error) {
+	xlFile, err := xlsx.OpenBinary(bytes)
+	if err != nil {
+		return [][]string{}, err
+	}
+	return parseXlsFile(xlFile)
+}
+
+func ParseXlsxFileWithPath(path string) ([][]string, error) {
+	xlFile, err := xlsx.OpenFile(path)
+	if err != nil {
+		return [][]string{}, err
+	}
+	return parseXlsFile(xlFile)
 }
 
 func ParseXlsFile(filePath string) [][]string {

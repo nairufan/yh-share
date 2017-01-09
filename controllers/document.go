@@ -10,6 +10,7 @@ import (
 	"github.com/nairufan/yh-share/util"
 	"strings"
 	"os"
+	"io"
 )
 
 type ExcelController struct {
@@ -45,6 +46,45 @@ func (u *ExcelController) Upload() {
 	}
 	u.SetExcel(records)
 	u.Data["json"] = records
+	u.ServeJSON();
+}
+
+// @router /multi-upload [post]
+func (u *ExcelController) MultipleUpload() {
+	files, err := u.GetFiles("attachment")
+	path := beego.AppConfig.String("tmp.path")
+	if err != nil {
+		panic(err)
+	}
+	telList := []string{}
+	for i, _ := range files {
+		//for each fileheader, get a handle to the actual file
+		file, err := files[i].Open()
+		defer file.Close()
+		if err != nil {
+			panic(err)
+		}
+		filePath := path + files[i].Filename
+		dst, err := os.Create(path + files[i].Filename)
+		defer dst.Close()
+		if err != nil {
+			panic(err)
+		}
+		//copy the uploaded file to the destination file
+		if _, err := io.Copy(dst, file); err != nil {
+			panic(err)
+		}
+		records, err := util.ParseXlsxFileWithPath(filePath)
+		if err != nil {
+			beego.Error(err)
+			records = util.ParseXlsFile(filePath)
+			err := os.Remove(filePath)
+			beego.Error(err)
+		}
+		telList = append(telList, util.TelRecords(records)...)
+		beego.Info(records)
+	}
+	u.Data["json"] = telList
 	u.ServeJSON();
 }
 
