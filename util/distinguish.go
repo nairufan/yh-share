@@ -2,7 +2,6 @@ package util
 
 import (
 	"strings"
-	"github.com/astaxie/beego"
 )
 
 func TelRecords(records [][]string) []string {
@@ -19,8 +18,6 @@ func TelRecords(records [][]string) []string {
 
 		}
 	}
-	beego.Info("telsCount:")
-	beego.Info(telsCount)
 	telIndex := maxIndex(telsCount)
 	maxCount := telsCount[telIndex]
 	if float64(maxCount) / float64(len(records)) > minRatio {
@@ -51,7 +48,9 @@ func maxIndex(numArray []int) int {
 func getColumn(records [][]string, column int) []string {
 	list := []string{}
 	for _, record := range records {
-		list = append(list, record[column])
+		if (isTel(record[column])) {
+			list = append(list, record[column])
+		}
 	}
 	return list
 }

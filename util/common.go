@@ -7,6 +7,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"io/ioutil"
 	"math/rand"
+	"sort"
 )
 
 func parseXlsFile(file *xlsx.File) ([][]string, error) {
@@ -117,5 +118,24 @@ func GetRandomString(size int) string {
 		index := rand.Intn(charsLen)
 		result += chars[index]
 	}
+	return result
+}
+
+func GetOrderedList(list []string) SortableCountList {
+	result := SortableCountList{}
+	if len(list) == 0 {
+		return result
+	}
+	countMap := map[string]int{}
+	for _, str := range list {
+		countMap[str] += 1
+	}
+	for k, v := range countMap {
+		result = append(result, &CountData{
+			Val: k,
+			Count: v,
+		})
+	}
+	sort.Sort(result)
 	return result
 }

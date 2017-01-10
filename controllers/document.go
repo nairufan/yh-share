@@ -82,9 +82,9 @@ func (u *ExcelController) MultipleUpload() {
 			beego.Error(err)
 		}
 		telList = append(telList, util.TelRecords(records)...)
-		beego.Info(records)
 	}
-	u.Data["json"] = telList
+
+	u.Data["json"] = util.GetOrderedList(telList)
 	u.ServeJSON();
 }
 
