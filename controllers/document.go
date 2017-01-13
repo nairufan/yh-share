@@ -13,6 +13,10 @@ import (
 	"io"
 )
 
+const (
+	NAME_REQUIRED = "NAME_REQUIRED"
+)
+
 type ExcelController struct {
 	BaseController
 }
@@ -49,6 +53,12 @@ func (u *ExcelController) Upload() {
 	u.ServeJSON();
 }
 
+type multipleResponse struct {
+	Success bool    `json:"success"`
+	Reason  string  `json:"reason"`
+	Records []*util.TopRecord `json:"records"`
+}
+
 // @router /multi-upload [post]
 func (u *ExcelController) MultipleUpload() {
 	files, err := u.GetFiles("attachment")
@@ -56,7 +66,8 @@ func (u *ExcelController) MultipleUpload() {
 	if err != nil {
 		panic(err)
 	}
-	telList := []string{}
+	response := &multipleResponse{Success: true}
+	topRecordList := []*util.TopRecord{}
 	for i, _ := range files {
 		//for each fileheader, get a handle to the actual file
 		file, err := files[i].Open()
@@ -81,11 +92,20 @@ func (u *ExcelController) MultipleUpload() {
 			err := os.Remove(filePath)
 			beego.Error(err)
 		}
-		telList = append(telList, util.TelRecords(records)...)
+		topRecords, tag := util.ParseRecords(records)
+		if tag == -1 {
+			response.Success = false
+			response.Reason = NAME_REQUIRED
+			u.Data["json"] = response
+			u.ServeJSON()
+			return
+		}
+		topRecordList = append(topRecordList, topRecords...)
 	}
 
-	u.Data["json"] = util.GetOrderedList(telList)
-	u.ServeJSON();
+	response.Records = topRecordList
+	u.Data["json"] = response
+	u.ServeJSON()
 }
 
 type saveRequest struct {
