@@ -18,6 +18,11 @@ func init() {
 				&controllers.UserController{},
 			),
 		),
+		beego.NSNamespace("/top",
+			beego.NSInclude(
+				&controllers.TopRecordController{},
+			),
+		),
 	)
 	beego.Get("/search/:id", controllers.Search)
 	beego.Get("/s/:id", controllers.Search)

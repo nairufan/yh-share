@@ -2,11 +2,14 @@ package util
 
 import (
 	"strings"
+	"sort"
+	"github.com/astaxie/beego"
 )
 
 type TopRecord struct {
-	Tel   string  `json:"tel"`
-	Names []string  `json:"names"`
+	Tel   string  `bson:"tel" json:"tel"`
+	Names []string  `bson:"names" json:"names"`
+	Count int  `bson:"count" json:"count"`
 }
 
 type NameIndex struct {
@@ -44,6 +47,84 @@ func ParseRecords(records [][]string) ([]*TopRecord, int) {
 
 	}
 	return topRecords, 0
+}
+
+func GetTopRecords(topRecords []*TopRecord) []*TopRecord {
+	sortableCountList := SortableCountList{}
+	resultList := []*TopRecord{}
+	if containsTel(topRecords) {
+		telNameMap := map[string][]string{}
+		telCountMap := map[string]int{}
+		for _, record := range topRecords {
+			names := telNameMap[record.Tel]
+			if names == nil {
+				names = []string{}
+			}
+			names = append(names, record.Names...)
+			telNameMap[record.Tel] = names
+			telCountMap[record.Tel]++
+		}
+		for k, v := range telCountMap {
+			sortableCountList = append(sortableCountList, &CountData{
+				Val: k,
+				Count: v,
+			})
+		}
+		sort.Sort(sortableCountList)
+		for _, countData := range sortableCountList {
+			resultList = append(resultList, &TopRecord{
+				Tel: countData.Val,
+				Count: countData.Count,
+				Names: getDistinctString(telNameMap[countData.Val]),
+			})
+		}
+	} else {
+		nameCountMap := map[string]int{}
+		for _, record := range topRecords {
+			for _, name := range record.Names {
+				nameCountMap[name]++
+			}
+		}
+		beego.Info(nameCountMap)
+		for k, v := range nameCountMap {
+			sortableCountList = append(sortableCountList, &CountData{
+				Val: k,
+				Count: v,
+			})
+		}
+		sort.Sort(sortableCountList)
+		for _, countData := range sortableCountList {
+			resultList = append(resultList, &TopRecord{
+				Count: countData.Count,
+				Names: []string{countData.Val},
+			})
+		}
+	}
+
+	return resultList
+}
+
+func containsTel(topRecords []*TopRecord) bool {
+	isTel := true
+	for _, record := range topRecords {
+		if record.Tel == "" {
+			isTel = false
+		}
+	}
+	return isTel
+}
+
+func getDistinctString(valList []string) []string {
+	reList := []string{}
+	valMap := map[string]bool{}
+	for _, val := range valList {
+		if !valMap[val] {
+			reList = append(reList, val)
+			valMap[val] = true
+		}
+	}
+
+	return reList
 }
 
 func getNameTitleIndex(records [][]string) *NameIndex {

@@ -14,7 +14,8 @@ import (
 )
 
 const (
-	NAME_REQUIRED = "NAME_REQUIRED"
+	NAME_REQUIRED = "姓名列必须!"
+	maxRecordsCount = 10
 )
 
 type ExcelController struct {
@@ -68,6 +69,8 @@ func (u *ExcelController) MultipleUpload() {
 	}
 	response := &multipleResponse{Success: true}
 	topRecordList := []*util.TopRecord{}
+	topDocumentList := []*model.TopDocument{}
+	fileNameList := []string{}
 	for i, _ := range files {
 		//for each fileheader, get a handle to the actual file
 		file, err := files[i].Open()
@@ -75,8 +78,10 @@ func (u *ExcelController) MultipleUpload() {
 		if err != nil {
 			panic(err)
 		}
-		filePath := path + files[i].Filename
-		dst, err := os.Create(path + files[i].Filename)
+		fileName := files[i].Filename
+		fileNameList = append(fileNameList, fileName)
+		filePath := path + fileName
+		dst, err := os.Create(path + fileName)
 		defer dst.Close()
 		if err != nil {
 			panic(err)
@@ -92,6 +97,12 @@ func (u *ExcelController) MultipleUpload() {
 			err := os.Remove(filePath)
 			beego.Error(err)
 		}
+		topDocument := &model.TopDocument{
+			UserId: u.GetUserId(),
+			Title: fileName,
+			Fields: records,
+		}
+		topDocumentList = append(topDocumentList, topDocument)
 		topRecords, tag := util.ParseRecords(records)
 		if tag == -1 {
 			response.Success = false
@@ -102,8 +113,19 @@ func (u *ExcelController) MultipleUpload() {
 		}
 		topRecordList = append(topRecordList, topRecords...)
 	}
-
-	response.Records = topRecordList
+	records := util.GetTopRecords(topRecordList)
+	service.AddTopDocuments(topDocumentList)
+	if response.Success {
+		if len(records) > maxRecordsCount {
+			records = records[:maxRecordsCount]
+		}
+		service.AddTopRecords(&model.TopRecord{
+			UserId: u.GetUserId(),
+			DocumentNames: fileNameList,
+			Records: records,
+		})
+	}
+	response.Records = records
 	u.Data["json"] = response
 	u.ServeJSON()
 }
