@@ -57,6 +57,43 @@ func (u *UserController) WxLoginResolve() {
 	u.Redirect("/index", 301)
 }
 
+// @router /top-wx-login [get]
+func (u *UserController) TopWxLogin() {
+	appId := beego.AppConfig.String("wechat.appId")
+	authUrl := beego.AppConfig.String("wechat.authUrl")
+	hostname := beego.AppConfig.String("hostname")
+	redirectUrl := fmt.Sprintf(authUrl, appId, hostname + "/api/user/top-wx-login-openid")
+	beego.Info("redirectUrl: ", redirectUrl)
+	u.Redirect(redirectUrl, 301)
+}
+
+// @router /top-wx-login-openid [get]
+func (u *UserController) TopWxLoginResolve() {
+	code := u.GetString("code")
+	appId := beego.AppConfig.String("wechat.appId")
+	secret := beego.AppConfig.String("wechat.appSecret")
+	authUrl := beego.AppConfig.String("wechat.openIdUrl")
+	authUrl = fmt.Sprintf(authUrl, appId, secret, code)
+	resp, err := http.Get(authUrl)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+	beego.Info(string(body))
+	response := &authResponse{}
+	json.Unmarshal(body, response)
+	beego.Info("openId:", response.Openid)
+	u.SetUserId(response.Openid)
+	//u.SetToken(response.AccessToken)
+	//u.SetExpire(response.ExpiresIn)
+	beego.Info(u.GetToken(), u.GetExpire())
+	u.Redirect("/top", 301)
+}
+
 // @router /mock-login [get]
 func (u *UserController) MockLogin() {
 	u.SetUserId("1111")

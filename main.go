@@ -31,6 +31,8 @@ func main() {
 	beego.SetStaticPath("/build/common.js", "static/admin/build/common.js")
 	beego.SetStaticPath("/build/statistic.js", "static/admin/build/statistic.js")
 	beego.SetStaticPath("/build/login.js", "static/admin/build/login.js")
+	beego.SetStaticPath("/top", "static/uhfindbest.html")
+	beego.SetStaticPath("/uhfindbest.js", "static/uhfindbest.js")
 	beego.Run()
 }
 
