@@ -54,7 +54,8 @@ func RecordsStatistics(start time.Time, end time.Time) []*model.Statistic {
 	defer session.Close()
 	group := bson.M{}
 	match := bson.M{}
-	date := bson.M{"$dateToString": bson.M{"format": "%Y-%m-%d", "date": "$createdTime"}}
+	//date := bson.M{"$dateToString": bson.M{"format": "%Y-%m-%d", "date": "$createdTime"}}
+	date := bson.M{"$concat": []interface{}{bson.M{"$year": "$createdTime"}, "-", bson.M{"month": "$createdTime"}, "-", bson.M{"dayOfMonth": "$createdTime"}}}
 	group["$group"] = bson.M{"_id": date, "count": bson.M{"$sum": 1}}
 	match["$match"] = bson.M{"createdTime": bson.M{"$gte": start, "$lte": end}}
 	session.MustPipeAll(collectionRecords, []bson.M{match, group}, &results)
