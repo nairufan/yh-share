@@ -20,7 +20,7 @@ func main() {
 	beego.InsertFilter("/api/document/list", beego.BeforeRouter, filters.LoginCheck)
 	beego.InsertFilter("/api/document/changeTitle", beego.BeforeRouter, filters.LoginCheck)
 	beego.InsertFilter("/statistic.html", beego.BeforeRouter, filters.AdminCheck)
-	beego.InsertFilter("", beego.BeforeRouter, filters.AdminCheck)
+	beego.InsertFilter("weixin.html", beego.BeforeRouter, filters.AdminCheck)
 	beego.InsertFilter("/index", beego.BeforeRouter, filters.LoginCheck)
 
 	beego.SetStaticPath("/index", "static/uhdingdan.html")
@@ -33,9 +33,9 @@ func main() {
 	beego.SetStaticPath("/build/common.js", "static/admin/build/common.js")
 	beego.SetStaticPath("/build/statistic.js", "static/admin/build/statistic.js")
 	beego.SetStaticPath("/build/login.js", "static/admin/build/login.js")
+	beego.SetStaticPath("/build/weixin.js", "static/admin/build/weixin.js")
 	beego.SetStaticPath("/top", "static/uhfindbest.html")
 	beego.SetStaticPath("/uhfindbest.js", "static/uhfindbest.js")
-	beego.SetStaticPath("", "static/statistic.html")
 	beego.Run()
 }
 
