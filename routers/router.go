@@ -1,4 +1,3 @@
-
 package routers
 
 import (
@@ -28,6 +27,8 @@ func init() {
 	beego.Get("/s/:id", controllers.Search)
 	beego.Get("/u/:id", controllers.SearchByUser)
 	beego.Get("/statistic.html", controllers.Index)
+	beego.Get("", controllers.Index)
+	beego.Get("/weixin.html", controllers.WeiXin)
 	beego.Get("/login.html", controllers.Login)
 	beego.AddNamespace(ns)
 }
