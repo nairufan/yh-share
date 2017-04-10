@@ -21,7 +21,6 @@ func main() {
 	beego.InsertFilter("/api/document/changeTitle", beego.BeforeRouter, filters.LoginCheck)
 	beego.InsertFilter("/statistic.html", beego.BeforeRouter, filters.AdminCheck)
 	beego.InsertFilter("/weixin.html", beego.BeforeRouter, filters.AdminCheck)
-	beego.InsertFilter("", beego.BeforeRouter, filters.AdminCheck)
 	beego.InsertFilter("/index", beego.BeforeRouter, filters.LoginCheck)
 
 	beego.SetStaticPath("/index", "static/uhdingdan.html")
