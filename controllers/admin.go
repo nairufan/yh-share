@@ -6,7 +6,7 @@ import (
 )
 
 func Index(ctx *context.Context) {
-	ctx.Redirect(301, "https://www.u365.me/wx/html/qrcode")
+	ctx.Redirect(302, "https://www.u365.me/wx/html/qrcode")
 }
 
 func WeiXin(ctx *context.Context) {
