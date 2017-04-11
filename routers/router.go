@@ -26,7 +26,7 @@ func init() {
 	beego.Get("/search/:id", controllers.Search)
 	beego.Get("/s/:id", controllers.Search)
 	beego.Get("/u/:id", controllers.SearchByUser)
-	beego.Get("/statistic.html", controllers.Index)
+	beego.Get("/statistic.html", controllers.Statistic)
 	beego.Get("", controllers.Index)
 	beego.Get("/weixin.html", controllers.WeiXin)
 	beego.Get("/login.html", controllers.Login)

@@ -18,6 +18,15 @@ func WeiXin(ctx *context.Context) {
 	ctx.Output.Body(content)
 }
 
+func Statistic(ctx *context.Context) {
+	content, err := ioutil.ReadFile("static/admin/statistic.html")
+	if err != nil {
+		panic(err)
+	}
+	ctx.Output.Header("Content-Type", "text/html; charset=utf-8")
+	ctx.Output.Body(content)
+}
+
 func Login(ctx *context.Context) {
 	content, err := ioutil.ReadFile("static/admin/login.html")
 	if err != nil {
